@@ -21,6 +21,14 @@ class User < ApplicationRecord
       # user.name = auth.info.name
       # user.photo = auth.info.photo
 
+      # Access_token is used to authenticate request made from this app to the google server
+      # user.google_token = auth.credentials.token
+      
+      # Refresh_token to request new access_token.
+      # Note: Refresh_token is only sent once during the first request
+      # refresh_token = auth.credentials.refresh_token
+      # user.google_refresh_token = refresh_token if refresh_token.present?
+
       if !user.password_digest
         pass = SecureRandom.hex(30)
         user.password = pass

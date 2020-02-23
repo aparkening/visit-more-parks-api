@@ -14,9 +14,9 @@ class SessionsController < ApplicationController
   end
 
   # Display login form
-  # def new
-  #   @user = User.new
-  # end
+  def new
+    @user = User.new
+  end
 
   # Check user authenticity
   def auth_check

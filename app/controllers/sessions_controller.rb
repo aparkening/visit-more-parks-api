@@ -8,7 +8,8 @@ class SessionsController < ApplicationController
         cookies["logged_in"] = true
         render json: user
     else
-        render json: { error: "Invalid Authentication"}, status: 401
+        # render json: { error: "Invalid Authentication"}, status: 401
+        not_authorized
     end
   end
 

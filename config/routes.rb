@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   get '/' => 'application#index'
   post '/login' => 'sessions#login'
-  post '/signup' => 'users#create'
   delete '/logout' => 'sessions#destroy'
   get '/auth-check' => 'sessions#auth_check'
   get '/auth/:provider/callback' => 'sessions#google_callback'
@@ -20,7 +19,7 @@ Rails.application.routes.draw do
       # Events
       resources :events, only: [:index, :show, :create, :update, :destroy]
  
-      # # Sessions
+      # Sessions
       # get '/login' => 'sessions#login'
       # get '/login' => 'sessions#new'
       # get '/logout' => 'sessions#destroy'

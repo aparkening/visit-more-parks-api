@@ -19,8 +19,18 @@ gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
+
+# Use Oauth2 and Calendar API for Google authentication
+# gem 'google-api-client', require: 'google/apis/calendar_v3'
+# gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection', '~> 0.1'
+
 # Use Active Model has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.7'
+
+# Use Sysrandom for randomized passwords
+gem 'sysrandom'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
@@ -28,9 +38,22 @@ gem 'jbuilder', '~> 2.7'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 
+# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
+gem 'rack-cors'
+
+# Use geocoder to map parks and determine proximity
+gem 'geocoder', '~> 1.6', '>= 1.6.1'
+
+# Use httparty to populate parks
+gem 'httparty'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'pry'
+
+  # Env file
+  gem 'dotenv-rails'
 end
 
 group :development do

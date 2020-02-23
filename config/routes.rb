@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get '/' => 'application#index'
+  get '/new' => 'sessions#new'
   post '/login' => 'sessions#login'
   delete '/logout' => 'sessions#destroy'
   get '/auth-check' => 'sessions#auth_check'

@@ -8,11 +8,11 @@ require 'httparty'
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+# binding.pry
+
 # Get parks from National Park Service api
 response = HTTParty.get("https://developer.nps.gov/api/v1/parks?limit=1000&api_key=#{ENV['NPS_API_KEY']}", format: :plain)
 parsed = JSON.parse response, symbolize_names: true
-
-# binding.pry
 
 # Create park objects from api response
 parsed[:data].each do |park| 

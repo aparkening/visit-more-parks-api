@@ -1,3 +1,4 @@
+# require 'httparty'
 class SessionsController < ApplicationController
 
   # Log user in and return json
@@ -34,6 +35,15 @@ class SessionsController < ApplicationController
   # Redirect to Google authorization
   def google_redirect
     redirect_to '/auth/google_oauth2'
+    
+    # binding.pry
+
+    # Post to google_oauth2 with auth token
+    # res = HTTParty.post("http://localhost:3000/auth/google_oauth2", :headers => {
+    #   "X-Api-Key" => "#{api_key}",
+    #   "Content-Type" => "application/json",
+    #   "Authorization" => "Bearer #{response.access_token}"
+    # })
   end
 
   # Create user session and cookie and recirect on successful callback

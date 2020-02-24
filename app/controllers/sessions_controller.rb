@@ -40,9 +40,9 @@ class SessionsController < ApplicationController
 
     # Post to google_oauth2 with auth token
     # res = HTTParty.post("http://localhost:3000/auth/google_oauth2", :headers => {
-    #   "X-Api-Key" => "#{api_key}",
+    #   "X-CSRF-TOKEN" => "#{form_authenticity_token}",
     #   "Content-Type" => "application/json",
-    #   "Authorization" => "Bearer #{response.access_token}"
+    #   "Authorization" => "Bearer #{response.access_token}" ----> Unclear whether needed
     # })
   end
 

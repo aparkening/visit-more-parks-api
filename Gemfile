@@ -22,9 +22,11 @@ gem 'jbuilder', '~> 2.7'
 
 # Use Oauth2 and Calendar API for Google authentication
 # gem 'google-api-client', require: 'google/apis/calendar_v3'
-# gem 'omniauth'
+gem 'omniauth'
 gem 'omniauth-google-oauth2'
-gem 'omniauth-rails_csrf_protection', '~> 0.1'
+
+# Uncomment after finding way to post to auth/google_oauth2
+# gem 'omniauth-rails_csrf_protection', '~> 0.1'
 
 # Use Active Model has_secure_password
 gem 'bcrypt', '~> 3.1.7'

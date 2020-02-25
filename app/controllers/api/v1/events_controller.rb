@@ -22,6 +22,7 @@ class Api::V1::EventsController < ApplicationController
     #   token.save
     # end
 
+
     # Get a list of calendars
     # calendar_list = service.list_calendar_lists.items
     
@@ -29,12 +30,19 @@ class Api::V1::EventsController < ApplicationController
     #     calendar.summary.include?("TripIt")
     #   end
 
-  # binding.pry
 
+  # Main account (default Aaron)
+  calendar_id = "primary"
 
-  # calendar_id = "primary"
+  # Trip It
   # calendar_id = "30lf4jpge026voaudmi6fdg49eulo5uv@import.calendar.google.com"
-  calendar_id = "aaron@webmeadow.com"
+  
+  # Explicit Aaron
+  # calendar_id = "aaron@webmeadow.com"
+
+  # Team Travel
+  # calendar_id = "webmeadow.com_iv7btbie2qu22d9mj0ijn5ade0@group.calendar.google.com"
+  
   response = service.list_events(
     calendar_id,
     max_results: 1000,
@@ -58,12 +66,10 @@ class Api::V1::EventsController < ApplicationController
 
   
   # Convert into hash
-  test_hash = JSON.parse(response.to_json)
+  events_hash = JSON.parse(response.to_json)
   
-  # Get locations with a comma
-  location_hash = test_hash["items"].select{|event| event["location"] && event["location"].include?(",")}
-
-
+  # Only keep locations with a comma
+  location_hash = events_hash["items"].select{|event| event["location"] && event["location"].include?(",")}
 
   # location_names = location_hash.each{|e| puts e["summary"] +" - "+ e["location"]}
   # Output: 
@@ -79,10 +85,21 @@ class Api::V1::EventsController < ApplicationController
   # g.first.coordinates 
   # => [42.3602534, -71.0582912]
 
-  binding.pry
 
+    # location_parks = location_hash.each do |location|
+    #   # Store all parks within 100 miles in array and attach to location
+    #   location["nearParks"] = Park.near(event["location"], 100).as_json
+    # end
 
-  # Add hash of near parks for each location
+    # location_hash.each{ |k, v| v.merge!({nearParks: Park.near(location["location"], 100).as_json})}
+
+    # location_hash.each do |k, v|
+    #   parks = Park.near(k["location"], 100).as_json
+    #   v.merge!({nearParks: p})
+    # end
+
+    # Add array of near parks to each location
+    location_hash.each{|e| e["nearParks"]= Park.near(e["location"], 100).as_json}
 
 
   # puts "Upcoming events:"

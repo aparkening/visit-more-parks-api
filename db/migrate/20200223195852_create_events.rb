@@ -3,7 +3,13 @@ class CreateEvents < ActiveRecord::Migration[6.0]
     create_table :events do |t|
       t.belongs_to :user, index: true, foreign_key: true
       t.belongs_to :park, index: true, foreign_key: true
-      t.datetime :date
+
+      t.string :title
+      t.string :location
+      t.string :description
+      t.datetime :start_time
+      t.datetime :end_time
+      t.string :timezone
 
       t.timestamps
     end

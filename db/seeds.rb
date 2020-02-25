@@ -16,5 +16,7 @@ parsed[:data].each do |park|
     parkCode: park[:parkCode],
     fullName: park[:fullName],
     url: park[:url]
+    latitude: park[:latLong][/(?<=lat:)(.*)(?=,)/].to_f
+    longitude: park[:latLong][/(?<=long:)(.*)/].to_f
   )
 end

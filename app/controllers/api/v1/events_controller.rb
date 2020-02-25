@@ -63,7 +63,7 @@ class Api::V1::EventsController < ApplicationController
   # Get locations with a comma
   location_hash = test_hash["items"].select{|event| event["location"] && event["location"].include?(",")}
 
-  binding.pry
+
 
   # location_names = location_hash.each{|e| puts e["summary"] +" - "+ e["location"]}
   # Output: 
@@ -72,6 +72,14 @@ class Api::V1::EventsController < ApplicationController
   # Austin Trip - Austin, TX
   # Portland Trip - Portland, OR
   # Virginia Trip - Falls Church, VA
+
+  # Geocode trip (Boston)
+  # Geocoder.configure(timeout: 5)
+  # g = Geocoder.search(location_hash.first["location"])
+  # g.first.coordinates 
+  # => [42.3602534, -71.0582912]
+
+  binding.pry
 
 
   # Add hash of near parks for each location
@@ -162,5 +170,5 @@ class Api::V1::EventsController < ApplicationController
       }
     )
   end
-  
+
 end

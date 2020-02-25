@@ -57,5 +57,4 @@ class ApplicationController < ActionController::Base
       # throw "Bad CSRF" unless valid_authenticity_token?(session, csrf_token)
   end
 
-
 end

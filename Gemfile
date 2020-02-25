@@ -21,8 +21,7 @@ gem 'jbuilder', '~> 2.7'
 # gem 'redis', '~> 4.0'
 
 # Use Oauth2 and Calendar API for Google authentication
-# gem 'google-api-client', require: 'google/apis/calendar_v3'
-gem 'google-api-client'
+gem 'google-api-client', '~> 0.34', require: 'google/apis/calendar_v3'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 

@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
-  get '/' => 'application#index'
+  # Root
+  root 'application#index'
+  
   get '/new' => 'sessions#new'
-  post '/login' => 'sessions#login'
+  # post '/login' => 'sessions#login'
   delete '/logout' => 'sessions#destroy'
+  
   get '/auth-check' => 'sessions#auth_check'
   get '/auth/:provider/callback' => 'sessions#google_callback'
   get '/auth/google/redirect' => 'sessions#google_redirect'
@@ -12,6 +15,8 @@ Rails.application.routes.draw do
 
       # Parks
       resources :parks, only: [:index]
+      post '/parks/favorite' => 'parks#favorite'
+      delete '/parks/unfavorite' => 'parkss#unfavorite'
 
       # Users
       resources :users, only: [:destroy]
@@ -19,8 +24,10 @@ Rails.application.routes.draw do
 
       # Events
       resources :events, only: [:index, :show, :create, :update, :destroy]
-      get 'test_create' => 'events#test_create'
-
+      # get 'test_create' => 'events#test_create'
+      # get 'test_update' => 'events#test_update'
+      # get 'test_destroy' => 'events#test_destroy'
+      
       # Sessions
       # get '/login' => 'sessions#login'
       # get '/login' => 'sessions#new'

@@ -4,7 +4,7 @@ require 'google/apis/calendar_v3'
 class Api::V1::EventsController < ApplicationController
   before_action :authenticate
 
-
+  # All events
   def index
     # authenticate
 
@@ -29,7 +29,7 @@ class Api::V1::EventsController < ApplicationController
     event_parks = location_hash.each{|event| event["nearParks"]= Park.near(event["location"], 100).as_json}
 
     # Return events with parks
-    render json: { eventList: event_parks }
+    render json: { events: event_parks }
   end
 
 
@@ -54,8 +54,13 @@ class Api::V1::EventsController < ApplicationController
   end
 
   # Create record
-  def test_create
-    # event = Event.new(event_params)
+  def create
+
+    binding.pry
+
+    # Create event
+    # event = current_user.events.build(event_params)
+
 
     # start_time: "2020-02-28T17:00:00-08:00", 
     # end_time: "2020-02-28T21:00:00-08:00", 
@@ -63,18 +68,19 @@ class Api::V1::EventsController < ApplicationController
     park = Park.find(1)
 
     # Set test event hash
-    e_params = {
-      title: "Visit #{park.fullName}", 
-      location: park.address, 
-      description: "Explore park!\n\n----\n\nAbout the Park:\n#{park.description}",
-      start_time: "2020-02-28T17:00:00", 
-      end_time: "2020-02-28T21:00:00", 
-      timezone: "America/Los_Angeles", 
-      park_id: park.id
-    }
+    # e_params = {
+    #   title: "Visit #{park.fullName}", 
+    #   location: park.address, 
+    #   description: "Explore park!\n\n----\n\nAbout the Park:\n#{park.description}",
+    #   start_time: "2020-02-28T17:00:00", 
+    #   end_time: "2020-02-28T21:00:00", 
+    #   timezone: "America/Los_Angeles", 
+    #   park_id: park.id
+    # }
+
 
     # Create event
-    event = current_user.events.build(e_params)
+    # event = current_user.events.build(e_params)
 
     # If event can save, also send to Google Calendar
     if event.save
@@ -112,7 +118,7 @@ class Api::V1::EventsController < ApplicationController
       # Add to g_event: attendees: g_attendees
 
       # Render json
-      render json: {eventId: result.id}
+      render json: {event: event}
     else
       resource_error
     end
@@ -120,12 +126,55 @@ class Api::V1::EventsController < ApplicationController
 
   # Update record
   def update
-    event = event.find(params[:id])
-    event.update(event_params)
+    # event = Event.find(params[:id])
+    # event.update(event_params)
 
+binding.pry
+
+  ### Test params
+      park = Park.find(3)
+
+      # Set test event hash
+      e_params = {
+        title: "Visit #{park.fullName}", 
+        location: park.address, 
+        park_id: park.id
+      }
+
+      # Create event
+      event = Event.find(22)
+      event.update(e_params)
+
+    # If event can save, also send to Google Calendar
     if event.save
-      # Render json
-      render json: {event: event}
+
+      # Start Google calendar
+      calendar = start_google_service
+
+      # Format event for Google
+      g_event = Google::Apis::CalendarV3::Event.new(
+        summary: event.title,
+        location: event.location,
+        description: event.description,
+        start: Google::Apis::CalendarV3::EventDateTime.new(
+          date_time: event.start_time,
+          time_zone: event.timezone
+        ),
+        end: Google::Apis::CalendarV3::EventDateTime.new(
+          date_time: event.end_time,
+          time_zone: event.timezone
+        )
+      )
+
+      result = calendar.update_event('primary', event.g_cal_id, g_event)
+      ### Add error handling
+
+      # # On success, save google calendar id to event
+      # event.g_cal_id = result.id
+      # event.save
+
+      # Return event id
+      render json: {eventId: result.id}
     else
       resource_error
     end
@@ -133,10 +182,22 @@ class Api::V1::EventsController < ApplicationController
 
   # Delete record
   def destroy
-    event = event.find(params[:id])
-    
+
+    binding.pry
+
+    # event = Event.find(params[:id])
+    event = Event.find(22)
+
     # Only event owner can delete
     authorize_resource(event)
+    
+    # Start Google calendar
+    calendar = start_google_service
+
+    # Delete Google event
+    result = calendar.delete_event('primary', event.g_cal_id)
+
+    # Delete database event
     event.destroy
 
     # Render json

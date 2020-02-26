@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_25_192207) do
+ActiveRecord::Schema.define(version: 2020_02_24_200248) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,7 +18,13 @@ ActiveRecord::Schema.define(version: 2020_02_25_192207) do
   create_table "events", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "park_id"
-    t.datetime "date"
+    t.string "title"
+    t.string "location"
+    t.string "description"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.string "timezone"
+    t.string "g_cal_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["park_id"], name: "index_events_on_park_id"
@@ -28,15 +34,16 @@ ActiveRecord::Schema.define(version: 2020_02_25_192207) do
   create_table "parks", force: :cascade do |t|
     t.string "npsId"
     t.string "latLong"
+    t.float "latitude"
+    t.float "longitude"
     t.string "description"
     t.string "designation"
     t.string "parkCode"
     t.string "fullName"
     t.string "url"
+    t.string "address"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.float "latitude"
-    t.float "longitude"
   end
 
   create_table "user_favorites", force: :cascade do |t|

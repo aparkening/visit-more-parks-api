@@ -19,7 +19,8 @@ Rails.application.routes.draw do
 
       # Events
       resources :events, only: [:index, :show, :create, :update, :destroy]
- 
+      get 'test_create' => 'events#test_create'
+
       # Sessions
       # get '/login' => 'sessions#login'
       # get '/login' => 'sessions#new'

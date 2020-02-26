@@ -5,15 +5,15 @@ class Api::V1::EventsController < ApplicationController
 
   def index
     authenticate
-    # render json: { message: "Welcome Home!" }
 
     # Initialize Google Calendar API
     service = Google::Apis::CalendarV3::CalendarService.new
     # Use google keys to authorize
     service.authorization = google_secret.to_authorization
-    # Request for a new aceess token just incase it expired
+    # Request new access token in case it expired
     service.authorization.refresh!
 
+    ### Improvement: only refresh if token expired. Idea:
     # Request new token if expired
     # if token.expired?
     #   new_access_token = service.authorization.refresh!
@@ -22,94 +22,65 @@ class Api::V1::EventsController < ApplicationController
     #   token.save
     # end
 
-
-    # Get a list of calendars
+    ### Useful for setup
+    ## Manual requst for calendar list
     # calendar_list = service.list_calendar_lists.items
-    
-    #   calendar_list.select do |calendar|
-    #     calendar.summary.include?("TripIt")
-    #   end
-
-
-  # Main account (default Aaron)
-  calendar_id = "primary"
-
-  # Trip It
-  # calendar_id = "30lf4jpge026voaudmi6fdg49eulo5uv@import.calendar.google.com"
-  
-  # Explicit Aaron
-  # calendar_id = "aaron@webmeadow.com"
-
-  # Team Travel
-  # calendar_id = "webmeadow.com_iv7btbie2qu22d9mj0ijn5ade0@group.calendar.google.com"
-  
-  response = service.list_events(
-    calendar_id,
-    max_results: 1000,
-    single_events: true,
-    order_by: "startTime",
-    time_min: DateTime.now.rfc3339
-  )
-
-  # Get all events
-  # ** Goes on forever! **
-  # items = service.fetch_all do |token|
-  #   service.list_events(
-  #     calendar_id,
-  #     max_results: 30,
-  #     single_events: true,
-  #     order_by: 'startTime',
-  #     time_min: DateTime.now.rfc3339,
-  #     page_token: token
-  #   )
-  # end
-
-  
-  # Convert into hash
-  events_hash = JSON.parse(response.to_json)
-  
-  # Only keep locations with a comma
-  location_hash = events_hash["items"].select{|event| event["location"] && event["location"].include?(",")}
-
-  # location_names = location_hash.each{|e| puts e["summary"] +" - "+ e["location"]}
-  # Output: 
-  # Boston Trip - Boston, MA
-  # Minneapolis Trip - Minneapolis, MN
-  # Austin Trip - Austin, TX
-  # Portland Trip - Portland, OR
-  # Virginia Trip - Falls Church, VA
-
-  # Geocode trip (Boston)
-  # Geocoder.configure(timeout: 5)
-  # g = Geocoder.search(location_hash.first["location"])
-  # g.first.coordinates 
-  # => [42.3602534, -71.0582912]
-
-
-    # location_parks = location_hash.each do |location|
-    #   # Store all parks within 100 miles in array and attach to location
-    #   location["nearParks"] = Park.near(event["location"], 100).as_json
+    ## Search for specific calendar
+    # calendar_list.select do |calendar|
+    #   calendar.summary.include?("TripIt")
     # end
 
-    # location_hash.each{ |k, v| v.merge!({nearParks: Park.near(location["location"], 100).as_json})}
+    # Set calendar
+    # Primary is main account
+    calendar_id = "primary"
+        
+    # Get up to 1000 events in calendar
+    response = service.list_events(
+      calendar_id,
+      max_results: 1000,
+      single_events: true,
+      order_by: "startTime",
+      time_min: DateTime.now.rfc3339
+    )
 
-    # location_hash.each do |k, v|
-    #   parks = Park.near(k["location"], 100).as_json
-    #   v.merge!({nearParks: p})
+    # Convert event list into hash
+    events_hash = JSON.parse(response.to_json)
+  
+    # Only keep locations that have comma (indicates city, state)
+    location_hash = events_hash["items"].select{|event| event["location"] && event["location"].include?(",")}
+
+    ### Sample output
+    # location_names = location_hash.each{|e| puts e["summary"] +" - "+ e["location"]}
+    # Output: 
+    # Boston Trip - Boston, MA
+    # Minneapolis Trip - Minneapolis, MN
+    # Austin Trip - Austin, TX
+    # Portland Trip - Portland, OR
+    # Virginia Trip - Falls Church, VA
+
+    ### Get all events
+    # ** Goes on forever! **
+    # items = service.fetch_all do |token|
+    #   service.list_events(
+    #     calendar_id,
+    #     max_results: 30,
+    #     single_events: true,
+    #     order_by: 'startTime',
+    #     time_min: DateTime.now.rfc3339,
+    #     page_token: token
+    #   )
     # end
 
-    # Add array of near parks to each location
-    location_hash.each{|e| e["nearParks"]= Park.near(e["location"], 100).as_json}
+    ### Sample geocode usage
+    # g = Geocoder.search("Boston, MA")
+    # g.first.coordinates 
+    # => [42.3602534, -71.0582912]
 
+    # Add array of near parks (within 100 miles) to each location
+    event_parks = location_hash.each{|e| e["nearParks"]= Park.near(e["location"], 100).as_json}
 
-  # puts "Upcoming events:"
-  # puts "No upcoming events found" if response.items.empty?
-  # response.items.each do |event|
-  #   start = event.start.date || event.start.date_time
-  #   puts "- #{event.summary} (#{start})"
-  # end
-
-  render json: { eventList: location_hash }
+    # Return events with parks
+    render json: { eventList: event_parks }
   end
 
 
@@ -137,8 +108,35 @@ class Api::V1::EventsController < ApplicationController
   def create
     event = event.new(event_params)
     if event.save
+
+      # Use google keys to authorize
+      # service.authorization = google_secret.to_authorization
+      # Request new access token in case it expired
+      # service.authorization.refresh!
+
+      ### Future: Add attendee emails to array
+      # g_attendees = event.attendees.map {|attendee| attendee = Google::Apis::CalendarV3::EventAttendee.new(email: attendee.email)}
+      # Add to g_event: attendees: g_attendees
+
+      # Create event in Google Calendar
+      g_event = Google::Apis::CalendarV3::Event.new(
+        summary: event.title,
+        location: event.location,
+        description: event.description,
+        start: Google::Apis::CalendarV3::EventDateTime.new(
+          date_time: event.start_time,
+          time_zone: event.timezone
+        ),
+        end: Google::Apis::CalendarV3::EventDateTime.new(
+          date_time: event.end_time,
+          time_zone: event.timezone
+        )
+      )
+      result = client.insert_event('primary', g_event)
+      puts "Event created: #{result.html_link}"
+
       # Render json
-      render json: {event: event}
+      # render json: {event: event}
     else
       resource_error
     end
@@ -173,7 +171,7 @@ class Api::V1::EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:name)
+    params.require(:event).permit(:title, :location, :description, :start_time, :end_time, :timezone, :user_id, :park_id)
   end
 
   def google_secret

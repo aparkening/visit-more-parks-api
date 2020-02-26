@@ -15,7 +15,7 @@ class User < ApplicationRecord
   def self.find_or_create_by_omniauth(auth)
 
     # Create new user only if it doesn't exist
-    where(uid: auth.uid).first_or_initialize do |user|
+    user = where(uid: auth.uid).first_or_initialize do |user|
       user.uid ||= auth.uid
       user.email = auth.info.email
       user.name = auth.info.name
@@ -36,6 +36,8 @@ class User < ApplicationRecord
     user.google_refresh_token = refresh_token if refresh_token.present?
 
     user.save
+
+    return user
   end
 
 end

@@ -1,7 +1,9 @@
 class ApplicationController < ActionController::Base
 
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
+  rescue_from AuthorizationError, with: :not_authorized
   rescue_from ActiveRecord::RecordInvalid, with: :resource_error
+
 
   # Default index
   def index
@@ -25,12 +27,14 @@ class ApplicationController < ActionController::Base
   ### App Errors
   # Raise error if user doesn't have permission to access
   def authorize_resource(resource)
-    raise ActiveRecord::RecordInvalid if !current_user || resource.user != current_user
+    # raise ActiveRecord::RecordInvalid if !current_user || resource.user != current_user
+    raise AuthorizationError if !current_user || resource.user != current_user
   end
 
   # Raise error if user isn't logged in
   def authenticate
-    raise ActiveRecord::RecordInvalid if !logged_in?
+    # raise ActiveRecord::RecordInvalid if !logged_in?
+    raise AuthorizationError if !logged_in?
   end
 
   ### JSON Errors

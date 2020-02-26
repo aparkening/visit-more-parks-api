@@ -1,4 +1,5 @@
 class Api::V1::UsersController < ApplicationController
+  before_action :authenticate
 
   # Delete record
   def destroy
@@ -8,7 +9,7 @@ class Api::V1::UsersController < ApplicationController
     if user && user.id == current_user.id
       user.destroy
       # Render json
-      render json: { user: user.id }, status: 200
+      render json: { user: user.id }
     else
       not_authorized
     end

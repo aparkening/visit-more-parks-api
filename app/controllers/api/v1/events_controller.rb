@@ -89,19 +89,7 @@ class Api::V1::EventsController < ApplicationController
       calendar = start_google_service
 
       # Format event for Google
-      g_event = Google::Apis::CalendarV3::Event.new(
-        summary: event.title,
-        location: event.location,
-        description: event.description,
-        start: Google::Apis::CalendarV3::EventDateTime.new(
-          date_time: event.start_time,
-          time_zone: event.timezone
-        ),
-        end: Google::Apis::CalendarV3::EventDateTime.new(
-          date_time: event.end_time,
-          time_zone: event.timezone
-        )
-      )
+      g_event = format_google_event(event)
 
       # binding.pry
       
@@ -152,19 +140,7 @@ binding.pry
       calendar = start_google_service
 
       # Format event for Google
-      g_event = Google::Apis::CalendarV3::Event.new(
-        summary: event.title,
-        location: event.location,
-        description: event.description,
-        start: Google::Apis::CalendarV3::EventDateTime.new(
-          date_time: event.start_time,
-          time_zone: event.timezone
-        ),
-        end: Google::Apis::CalendarV3::EventDateTime.new(
-          date_time: event.end_time,
-          time_zone: event.timezone
-        )
-      )
+      g_event = format_google_event(event)
 
       result = calendar.update_event('primary', event.g_cal_id, g_event)
       ### Add error handling
@@ -173,8 +149,8 @@ binding.pry
       # event.g_cal_id = result.id
       # event.save
 
-      # Return event id
-      render json: {eventId: result.id}
+      # Return json
+      render json: {event: event}
     else
       resource_error
     end
@@ -288,25 +264,21 @@ binding.pry
     return events_hash
   end
 
+  def format_google_event(event)
+    Google::Apis::CalendarV3::Event.new(
+      summary: event.title,
+      location: event.location,
+      description: event.description,
+      start: Google::Apis::CalendarV3::EventDateTime.new(
+        date_time: event.start_time,
+        time_zone: event.timezone
+      ),
+      end: Google::Apis::CalendarV3::EventDateTime.new(
+        date_time: event.end_time,
+        time_zone: event.timezone
+      )
+    )
+  end
+
+
 end
-
-
-# class GoogleCalendarWrapper
-#   attr_reader :service
-
-#   def initialize(current_user)
-#     @current_user = current_user
-#     configure_client
-#   end
-
-#   def configure_client
-#     @service = Google::Apis::CalendarV3::CalendarService.new
-    
-#     # Use google keys to authorize
-#     @client.authorization = google_secret.to_authorization
-#     # Request new access token in case it expired
-#     @client.authorization.refresh!
-
-#     @service = @client.discovered_api('calendar', 'v3')
-#   end
-# end

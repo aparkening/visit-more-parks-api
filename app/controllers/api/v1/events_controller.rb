@@ -26,10 +26,10 @@ class Api::V1::EventsController < ApplicationController
     # => [42.3602534, -71.0582912]
 
     # Add array of near parks (within 100 miles) to each location
-    event_parks = location_hash.each{|event| event["nearParks"]= Park.near(event["location"], 100).as_json}
+    events_and_parks = location_hash.each{|event| event["nearParks"]= Park.near(event["location"], 100).as_json}
 
     # Return events with parks
-    render json: { events: event_parks }
+    render json: { events: events_and_parks }
   end
 
 
@@ -259,9 +259,8 @@ binding.pry
     # end
 
     # Convert event list into hash
-    events_hash = JSON.parse(events.to_json)
+    return JSON.parse(events.to_json)
 
-    return events_hash
   end
 
   def format_google_event(event)

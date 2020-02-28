@@ -260,7 +260,6 @@ binding.pry
 
     # Convert event list into hash
     return JSON.parse(events.to_json)
-
   end
 
   def format_google_event(event)

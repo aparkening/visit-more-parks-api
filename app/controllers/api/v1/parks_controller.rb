@@ -1,5 +1,5 @@
 class Api::V1::ParksController < ApplicationController
-  before_action :authenticate
+  # before_action :authenticate
 
   # All parks
   def index

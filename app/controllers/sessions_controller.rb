@@ -27,7 +27,6 @@ class SessionsController < ApplicationController
 
   # Log user out
   def destroy
-    authenticate
     session.clear
     render json: { message: "Successfully logged out." }
   end

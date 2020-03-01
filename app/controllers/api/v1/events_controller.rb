@@ -187,7 +187,7 @@ binding.pry
     params.require(:event).permit(:title, :location, :description, :start_time, :end_time, :timezone, :user_id, :park_id)
   end
 
-  # Start calendar service and authorize use
+  # Start and authorize new calendar service
   def start_google_service
     # Initialize Google Calendar API
     service = Google::Apis::CalendarV3::CalendarService.new
@@ -262,6 +262,7 @@ binding.pry
     return JSON.parse(events.to_json)
   end
 
+  # Return event hash in Google-friendly format  
   def format_google_event(event)
     Google::Apis::CalendarV3::Event.new(
       summary: event.title,

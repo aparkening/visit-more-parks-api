@@ -55,21 +55,16 @@ class Api::V1::EventsController < ApplicationController
 
   # Create record
   def create
-
-    binding.pry
-
-    # Create event
-    # event = current_user.events.build(event_params)
-
+    event = current_user.events.build(event_params)
 
     # start_time: "2020-02-28T17:00:00-08:00", 
     # end_time: "2020-02-28T21:00:00-08:00", 
 
-    park = Park.find(1)
+    # park = Park.find(1)
 
     # Set test event hash
     # e_params = {
-    #   title: "Visit #{park.fullName}", 
+    #   summary: "Visit #{park.fullName}", 
     #   location: park.address, 
     #   description: "Explore park!\n\n----\n\nAbout the Park:\n#{park.description}",
     #   start_time: "2020-02-28T17:00:00", 
@@ -77,7 +72,6 @@ class Api::V1::EventsController < ApplicationController
     #   timezone: "America/Los_Angeles", 
     #   park_id: park.id
     # }
-
 
     # Create event
     # event = current_user.events.build(e_params)
@@ -124,7 +118,7 @@ binding.pry
 
       # Set test event hash
       e_params = {
-        title: "Visit #{park.fullName}", 
+        summary: "Visit #{park.fullName}", 
         location: park.address, 
         park_id: park.id
       }
@@ -184,7 +178,7 @@ binding.pry
   private
 
   def event_params
-    params.require(:event).permit(:title, :location, :description, :start_time, :end_time, :timezone, :user_id, :park_id)
+    params.require(:event).permit(:summary, :location, :description, :start_time, :end_time, :timezone, :user_id, :park_id)
   end
 
   # Start and authorize new calendar service
@@ -265,16 +259,16 @@ binding.pry
   # Return event hash in Google-friendly format  
   def format_google_event(event)
     Google::Apis::CalendarV3::Event.new(
-      summary: event.title,
+      summary: event.summary,
       location: event.location,
       description: event.description,
       start: Google::Apis::CalendarV3::EventDateTime.new(
         date_time: event.start_time,
-        time_zone: event.timezone
+        # time_zone: event.timezone
       ),
       end: Google::Apis::CalendarV3::EventDateTime.new(
         date_time: event.end_time,
-        time_zone: event.timezone
+        # time_zone: event.timezone
       )
     )
   end

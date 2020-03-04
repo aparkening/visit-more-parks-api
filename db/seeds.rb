@@ -4,6 +4,8 @@ require 'httparty'
 response = HTTParty.get("https://developer.nps.gov/api/v1/parks?limit=1000&api_key=#{ENV['NPS_API_KEY']}", format: :plain)
 parsed = JSON.parse response, symbolize_names: true
 
+### Add "states" object for sorting
+
 # Create park objects from api response
 parsed[:data].each do |park| 
   Park.create(

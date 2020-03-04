@@ -1,24 +1,45 @@
-# README
+# Visit More Parks API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Visit More Parks is an app that suggests nearby U.S. National Parks to events in your Google Calendar. The app also makes it easy to add a park visit to your calendar.
 
-Things you may want to cover:
+This repository houses the Rails API, supplying data to the [React frontend interface](https://github.com/aparkening/visit-more-parks-frontend). 
 
-* Ruby version
+## Installation
 
-* System dependencies
+1. Clone this repo.
+2. Install dependences:
+```
+    $ bundle install
+```
+3. Create database structure:
+```
+    $ rails db:create
+    $ rails db:migrate
+```
+4. Run seed file to populate all National Park Service parks:
+```
+    $ rails db:seed
+```
+5. Run web server:
+```
+    $ rails s
+```
+5. Navigate to `localhost:3000` in your browser.
 
-* Configuration
+## Usage
 
-* Database creation
+- Add your own data via command line by using `rails c`.
 
-* Database initialization
+- Interact via [React frontend interface](https://github.com/aparkening/visit-more-parks-frontend).
 
-* How to run the test suite
+## Contributing
 
-* Services (job queues, cache servers, search engines, etc.)
+Bug reports and pull requests are welcome on GitHub at https://github.com/aparkening/visit-more-parks-api. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
-* Deployment instructions
+## License
 
-* ...
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+## Code of Conduct
+
+Everyone interacting in the Tea Tastes project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/aparkening/visit-more-parks-api/blob/master/CODE_OF_CONDUCT.md).

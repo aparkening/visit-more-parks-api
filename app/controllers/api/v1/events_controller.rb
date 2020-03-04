@@ -158,11 +158,7 @@ binding.pry
 
   # Delete record
   def destroy
-
-    binding.pry
-
-    # event = Event.find(params[:id])
-    event = Event.find(22)
+    event = Event.find(params[:id])
 
     # Only event owner can delete
     authorize_resource(event)

@@ -1,15 +1,14 @@
 require 'google/api_client/client_secrets.rb'
 require 'google/apis/calendar_v3'
+require 'active_support'
 
 class Api::V1::EventsController < ApplicationController
   before_action :authenticate
 
   # All events
   def index
-    # authenticate
-
     # Only keep locations that have comma (indicates city, state)
-    location_hash = get_google_events["items"].select{|event| event["location"] && event["location"].include?(",")}
+    location_hash = get_google_events["items"].select{|event| event["location"] && event["location"].include?(",") && event["summary"].exclude?("[id:")}
 
     ### Sample output
     # location_names = location_hash.each{|e| puts e["summary"] +" - "+ e["location"]}
@@ -28,8 +27,11 @@ class Api::V1::EventsController < ApplicationController
     # Add array of near parks (within 100 miles) to each location
     events_and_parks = location_hash.each{|event| event["nearParks"]= Park.near(event["location"], 100).as_json}
 
+    # Get all events saved in database (parkEvents)
+    park_events = Event.all.order(start_time: :asc)
+
     # Return events with parks
-    render json: { events: events_and_parks }
+    render json: { googleEvents: events_and_parks, parkEvents: park_events }
   end
 
 
@@ -55,6 +57,10 @@ class Api::V1::EventsController < ApplicationController
 
   # Create record
   def create
+
+    # Add parkEvent identifier
+    event_params[:summary] << " [id: #{event_params[:park_id]}]"
+
     event = current_user.events.build(event_params)
 
     # start_time: "2020-02-28T17:00:00-08:00", 

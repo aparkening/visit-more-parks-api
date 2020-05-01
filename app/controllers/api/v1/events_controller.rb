@@ -8,7 +8,7 @@ class Api::V1::EventsController < ApplicationController
   # All events
   def index
     # Only keep locations that have comma (indicates city, state)
-    location_hash = get_google_events["items"].select{|event| event["location"] && event["location"].include?(",") && event["summary"].exclude?("[id:")}
+    location_hash = get_google_events["items"].select{|event| event["location"] && event["location"].include?(",") && event["location"].exclude?("http") && event["summary"].exclude?("[id:")}
 
     ### Sample output
     # location_names = location_hash.each{|e| puts e["summary"] +" - "+ e["location"]}

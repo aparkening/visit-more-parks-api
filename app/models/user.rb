@@ -6,11 +6,6 @@ class User < ApplicationRecord
   has_many :events
   has_many :parks, through: :events
 
-  # Validations
-  # validates :email, presence: true, uniqueness: true
-  # validates :password, presence: true, on: :create
-  # validates :password, length: { minimum: 6 }, on: :create
-
   # Find or create user by Omniauth
   def self.find_or_create_by_omniauth(auth)
 

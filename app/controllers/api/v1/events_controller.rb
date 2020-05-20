@@ -63,24 +63,23 @@ class Api::V1::EventsController < ApplicationController
 
     event = current_user.events.build(event_params)
 
-    # start_time: "2020-02-28T17:00:00-08:00", 
-    # end_time: "2020-02-28T21:00:00-08:00", 
+    # Testing
+      # Set park
+      # park = Park.find(1)
 
-    # park = Park.find(1)
+      # Set event hash
+      # e_params = {
+      #   summary: "Visit #{park.fullName}", 
+      #   location: park.address, 
+      #   description: "Explore park!\n\n----\n\nAbout the Park:\n#{park.description}",
+      #   start_time: "2020-02-28T17:00:00", 
+      #   end_time: "2020-02-28T21:00:00", 
+      #   timezone: "America/Los_Angeles", 
+      #   park_id: park.id
+      # }
 
-    # Set test event hash
-    # e_params = {
-    #   summary: "Visit #{park.fullName}", 
-    #   location: park.address, 
-    #   description: "Explore park!\n\n----\n\nAbout the Park:\n#{park.description}",
-    #   start_time: "2020-02-28T17:00:00", 
-    #   end_time: "2020-02-28T21:00:00", 
-    #   timezone: "America/Los_Angeles", 
-    #   park_id: park.id
-    # }
-
-    # Create event
-    # event = current_user.events.build(e_params)
+      # Create event
+      # event = current_user.events.build(e_params)
 
     # If event can save, also send to Google Calendar
     if event.save
@@ -91,9 +90,7 @@ class Api::V1::EventsController < ApplicationController
       # Format event for Google
       g_event = format_google_event(event)
 
-      # binding.pry
-      
-      #### Add error handling
+      ### Future: Add error handling
 
       result = calendar.insert_event('primary', g_event)
       # puts "Event created: #{result.html_link}"

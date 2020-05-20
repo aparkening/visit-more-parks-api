@@ -27,13 +27,6 @@ Rails.application.routes.draw do
       # get 'test_create' => 'events#test_create'
       # get 'test_update' => 'events#test_update'
       # get 'test_destroy' => 'events#test_destroy'
-      
-      # Sessions
-      # get '/login' => 'sessions#login'
-      # get '/login' => 'sessions#new'
-      # get '/logout' => 'sessions#destroy'
     end
   end
-
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

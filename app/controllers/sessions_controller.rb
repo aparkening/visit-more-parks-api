@@ -1,5 +1,7 @@
 # require 'httparty'
 class SessionsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:destroy]
+
 
   # Log user in and return json
   def login
@@ -20,14 +22,14 @@ class SessionsController < ApplicationController
   end
 
   # Check user authenticity
-  def auth_check
+  def auth_check    
     cookies["logged_in"] = logged_in?
     render json: {csrf_auth_token: form_authenticity_token}
   end
 
   # Log user out
   def destroy
-    session.clear
+    session.clear    
     cookies["logged_in"] = logged_in?
     render json: { message: "Successfully logged out." }
   end

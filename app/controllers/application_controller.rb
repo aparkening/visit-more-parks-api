@@ -1,9 +1,9 @@
 class ApplicationController < ActionController::Base
-
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
   rescue_from AuthorizationError, with: :not_authorized
   rescue_from ActiveRecord::RecordInvalid, with: :resource_error
 
+  # rescue_from ActionController::InvalidAuthenticityToken, with: :csrf_error
 
   # Default index
   def index
@@ -53,12 +53,12 @@ class ApplicationController < ActionController::Base
   def not_authorized
     render json: { error: 'Not Authorized'}, status: 401
   end
-  
 
-  def bad_csrf
-      binding.pry
-      # csrf_token = request.headers["HTTP_X_CSRF_TOKEN"]
-      # throw "Bad CSRF" unless valid_authenticity_token?(session, csrf_token)
-  end
+  # Investigate authenticity token errors
+  # def csrf_error
+  #   csrf_token = request.headers["HTTP_X_CSRF_TOKEN"]
+  #   valid_authenticity_token?(session, csrf_token)
+  #   binding.pry
+  # end
 
 end

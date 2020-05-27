@@ -53,7 +53,7 @@ class SessionsController < ApplicationController
     user = User.find_or_create_by_omniauth(auth)
     session[:user_id] = user.id
     cookies[:logged_in] = true
-    redirect_to 'http://localhost:8000'
+    redirect_to 'https://visit-more-parks.herokuapp.com'
   end
 
   private
